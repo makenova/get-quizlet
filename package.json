@@ -1,8 +1,9 @@
 {
-  "name": "quizlet-scraper",
+  "name": "getquizlet",
   "version": "1.0.0",
-  "description": "",
+  "description": "grab a quiz from [quizlet](https://quizlet.com) in plain text format.",
   "main": "quizlet-scrape.js",
+  "bin": {"getquizlet": "./quizlet-scrape.js"},
   "scripts": {
     "dev": "nodemon quizlet-scrape.js https://quizlet.com/26463057/c-1st-test-flash-cards"
   },

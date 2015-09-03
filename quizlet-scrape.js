@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var fs = require('fs');
 var cheerio = require('cheerio');
 var request = require('request');
@@ -8,14 +10,11 @@ var siteurl = process.argv[2];
 (function main(siteurl) {
   if(!siteurl){ return console.log('You must provide a url');}
   getPage(siteurl, function(err, page){
-    if (err) throw err;
+    if (err) reportErr("Could not get the page: " + siteurl ,err);
     parsePage(page, function(err, parsedPageObj){
-      if (err) throw err;
-      writeFile(parsedPageObj, function(err, success){
-        if (err || !success){
-          console.log('failed to write the file');
-          throw err;
-        }
+      if (err) reportErr('There was a problem parsing the page', err);
+      writeFile(siteurl, parsedPageObj, function(err){
+        if (err) reportErr('failed to write the file', err);
         console.log('file written to ' + fileNameTitle(parsedPageObj.title));
       });
     });
@@ -23,18 +22,10 @@ var siteurl = process.argv[2];
 }(siteurl));
 
 function getPage(siteurl, callback){
-  if (process.env.NODE_ENV === 'development'){
-    fs.readFile('./quiztest.html', 'utf8', function(err, file){
-      if (err) return callback(err);
-      console.log('read from disk');
-      return callback(null, file);
-    });
-  }else {
-    request(siteurl, function(err, res, body){
-      if (err) return callback(err);
-      return callback(null, body);
-    });
-  }
+  request(siteurl, function(err, res, body){
+    if (err) return callback(err);
+    return callback(null, body);
+  });
 }
 
 function parsePage(quizpage, callback){
@@ -56,19 +47,25 @@ function parsePage(quizpage, callback){
   return callback(null, parsedPageObj);
 }
 
-function writeFile(parsedPageObj, callback){
-  // Write to a file with its name as the quizlet title
+function writeFile(siteurl, parsedPageObj, callback){
+  var NLC = "\n"; // new line
+  // append to a file with its name as the quizlet title
   var fileTitle = fileNameTitle(parsedPageObj.title);
-  var NLN = "\n";
-  // write the title at the top of the page
-  fs.appendFileSync(fileTitle, parsedPageObj.title + NLN);
+  // write the url and title at the top of the page
+  fs.appendFileSync(fileTitle, siteurl + NLC + parsedPageObj.title + NLC);
   // iterate over qaArray and write out numbered qa pairs
+  // using async because of errors 
   async.forEachOf(parsedPageObj.qaArray, function(qaPair, qaIndex, cb){
-    fs.appendFileSync(fileTitle, NLN + qaIndex + ". " + qaPair.queston + NLN);
-    fs.appendFileSync(fileTitle, qaPair.answer + NLN);
+    try{
+      fs.appendFileSync(fileTitle, NLC + qaIndex + ". " + qaPair.queston + NLC);
+      fs.appendFileSync(fileTitle, qaPair.answer + NLC);
+    }catch(ex){
+      cb(ex);
+      return;
+    }
     cb(null);
-  });
-  return callback(null, true);
+  }, function(err){ if (err) return callback(err);});
+  return callback(null);
 }
 
 // helpers
@@ -80,4 +77,9 @@ function zipQA(arr1, arr2){
 
 function fileNameTitle(title){
   return title.trim().replace(/\s/g, '_') + '.txt';
+}
+
+function reportErr(message, error) {
+  console.log(message, error);
+  process.exit(1);
 }
