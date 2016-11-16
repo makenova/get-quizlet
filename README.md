@@ -35,13 +35,13 @@ getquizlet https://quizlet.com/26463057/c-1st-test-flash-cards
 
 ### `quiz.getQuiz(quizletURL)`
 
-Fetches a quizlet and parse it into an quiz object.
+Fetches a quizlet.
 
 This is just a helper for the cli, you can fetch the quiz however you want.
 
 ### `quiz.parseQuiz(quizletHtml)`
 
-Fetch a quizlet and parse it into an quiz object.
+Parse a HTML page from quizlet into an quiz object.
 
 The quiz object will have the following properties:
 
@@ -57,7 +57,7 @@ This is another helper for the cli.
 
 ## Bugs
 
-Please report any bugs to: https://github.com/makenova/panda/issues
+Please report any bugs to: https://github.com/makenova/get-quizlet/issues
 
 ## License
 
