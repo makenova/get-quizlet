@@ -2,14 +2,15 @@
 
 'use strict'
 
-let quiz = require('./quizlet-scrape')
+let quiz = require('./index')
 
 let siteurl = process.argv[2]
 
 if(!siteurl) reportErr(new Error('You must provide a url'))
 
 quiz.getQuiz(siteurl)
-  .then(quiz.writeFile.bind(null, siteurl))
+  .then(quiz.parseQuiz)
+  .then(quiz.writeFile)
   .catch(err => reportErr(err))
 
 function reportErr(error) {

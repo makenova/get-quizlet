@@ -2,22 +2,34 @@
   "name": "getquizlet",
   "version": "1.0.0",
   "description": "grab a quiz from [quizlet](https://quizlet.com) in plain text format.",
-  "main": "quizlet-scrape.js",
+  "main": "index.js",
   "bin": {
-    "getquizlet": "./quizlet-scrape.js"
+    "getquizlet": "./cli.js"
   },
   "scripts": {
-    "dev": "nodemon quizlet-scrape.js https://quizlet.com/26463057/c-1st-test-flash-cards"
+    "test": "ava",
+    "dev": "nodemon cli.js https://quizlet.com/26463057/c-1st-test-flash-cards"
   },
-  "keywords": [],
+  "keywords": [
+    "quizlet"
+  ],
   "author": "makenova",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/makenova/get-quizlet"
+  },
+  "bugs": "https://github.com/makenova/get-quizlet/issues",
+  "engines": {
+    "node": ">=4.1.1"
+  },
   "dependencies": {
     "async": "^2.1.2",
     "cheerio": "^0.22.0",
     "request": "^2.61.0"
   },
   "devDependencies": {
+    "ava": "^0.16.0",
     "nodemon": "^1.4.1"
   }
 }

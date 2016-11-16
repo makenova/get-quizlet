@@ -6,7 +6,8 @@ let request = require('request')
 let async = require('async')
 
 module.exports = {
-  getQuiz: (siteurl) => getPage(siteurl).then(parsePage),
+  getQuiz: getPage,
+  parseQuiz: parsePage,
   writeFile: writeFile
 }
 
@@ -15,10 +16,6 @@ function zipQA(arr1, arr2) {
   return arr1.map(function(arr1element, arr1index) {
     return {queston: arr1element, answer: arr2[arr1index]}
   })
-}
-
-function fileNameTitle(title) {
-  return title.trim().replace(/\s/g, '_') + '.txt'
 }
 
 // main functions
@@ -47,20 +44,26 @@ function parsePage(quizpage) {
   if (questions.length !== answers.length)
     return Promise.reject(new Error('The questions and answers do not match.'))
 
-  var title = $('h1').first().text()
-  var parsedPageObj = {title: title, qaArray: zipQA(questions, answers)}
+  let title = $('h1').first().text()
+  let parsedPageObj = {title: title, questions: questions, answers:answers}
   return Promise.resolve(parsedPageObj)
 }
 
 function writeFile(siteurl, parsedPageObj) {
-  var NLC = "\n" // new line
+  if (parsedPageObj === undefined) {
+    parsedPageObj = siteurl
+    siteurl = null
+  }
+
+  let NLC = "\n" // new line
+  let qaArray = zipQA(parsedPageObj.questions, parsedPageObj.answers)
   // append to a file with its name as the quizlet title
-  var fileTitle = parsedPageObj.title.trim().replace(/\s/g, '_') + '.txt'
+  let fileTitle = parsedPageObj.title.trim().replace(/\s/g, '_') + '.txt'
   // write the url and title at the top of the page
-  fs.appendFileSync(fileTitle, siteurl + NLC + parsedPageObj.title + NLC)
+  fs.appendFileSync(fileTitle, (siteurl || '') + NLC + parsedPageObj.title + NLC)
   // iterate over qaArray and write out numbered qa pairs
   // using async because of errors
-  async.forEachOf(parsedPageObj.qaArray, function(qaPair, qaIndex, callback) {
+  async.forEachOf(qaArray, function(qaPair, qaIndex, callback) {
     try{
       fs.appendFileSync(fileTitle, NLC + qaIndex + ". " + qaPair.queston + NLC)
       fs.appendFileSync(fileTitle, qaPair.answer + NLC)
