@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "grab a quiz from [quizlet](https://quizlet.com) in plain text format.",
   "main": "quizlet-scrape.js",
-  "bin": {"getquizlet": "./quizlet-scrape.js"},
+  "bin": {
+    "getquizlet": "./quizlet-scrape.js"
+  },
   "scripts": {
     "dev": "nodemon quizlet-scrape.js https://quizlet.com/26463057/c-1st-test-flash-cards"
   },
@@ -11,8 +13,8 @@
   "author": "makenova",
   "license": "ISC",
   "dependencies": {
-    "async": "^1.4.2",
-    "cheerio": "^0.19.0",
+    "async": "^2.1.2",
+    "cheerio": "^0.22.0",
     "request": "^2.61.0"
   },
   "devDependencies": {
