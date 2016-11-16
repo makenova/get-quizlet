@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 'use strict'
 
 let fs = require('fs')
@@ -6,14 +5,10 @@ let cheerio = require('cheerio')
 let request = require('request')
 let async = require('async')
 
-let siteurl = process.argv[2]
-
-if(!siteurl) reportErr(new Error('You must provide a url'))
-
-getPage(siteurl)
-  .then(parsePage)
-  .then(writeFile.bind(null, siteurl))
-  .catch(err => reportErr(err))
+module.exports = {
+  getQuiz: (siteurl) => getPage(siteurl).then(parsePage),
+  writeFile: writeFile
+}
 
 // helpers
 function zipQA(arr1, arr2) {
@@ -24,12 +19,6 @@ function zipQA(arr1, arr2) {
 
 function fileNameTitle(title) {
   return title.trim().replace(/\s/g, '_') + '.txt'
-}
-
-function reportErr(error) {
-  console.error(error.message)
-  if(process.env.NODE_ENV === 'development') console.error(error)
-  process.exit(1)
 }
 
 // main functions
@@ -66,7 +55,7 @@ function parsePage(quizpage) {
 function writeFile(siteurl, parsedPageObj) {
   var NLC = "\n" // new line
   // append to a file with its name as the quizlet title
-  var fileTitle = fileNameTitle(parsedPageObj.title)
+  var fileTitle = parsedPageObj.title.trim().replace(/\s/g, '_') + '.txt'
   // write the url and title at the top of the page
   fs.appendFileSync(fileTitle, siteurl + NLC + parsedPageObj.title + NLC)
   // iterate over qaArray and write out numbered qa pairs
