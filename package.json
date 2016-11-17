@@ -1,6 +1,6 @@
 {
   "name": "getquizlet",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "grab a quiz from [quizlet](https://quizlet.com) in plain text format.",
   "main": "index.js",
   "bin": {
