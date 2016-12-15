@@ -24,12 +24,12 @@
     "node": ">=4.1.1"
   },
   "dependencies": {
-    "async": "^2.1.2",
+    "async": "^2.1.4",
     "cheerio": "^0.22.0",
-    "request": "^2.61.0"
+    "request": "^2.79.0"
   },
   "devDependencies": {
-    "ava": "^0.16.0",
+    "ava": "^0.17.0",
     "nodemon": "^1.4.1"
   }
 }
