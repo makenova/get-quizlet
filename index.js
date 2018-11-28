@@ -37,7 +37,7 @@ function parsePage(quizpage) {
     questions.push($(this).text())
   })
 
-  $('.SetPageTerm-definition').each(function(index, element) {
+  $('.SetPageTerm-definitionText').each(function(index, element) {
     answers.push($(this).text())
   })
 
